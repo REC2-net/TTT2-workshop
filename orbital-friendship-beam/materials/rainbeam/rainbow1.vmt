@@ -1,0 +1,5 @@
+"Sprite"
+{
+	"$basetexture" "rainbeam/rainbow1"
+	"$translucent" 1
+}

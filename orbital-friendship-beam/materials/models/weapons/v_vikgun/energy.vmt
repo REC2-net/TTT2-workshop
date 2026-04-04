@@ -1,0 +1,22 @@
+"vertexlitgeneric" {
+    "$basetexture" "Models\weapons\v_vikgun\energy"
+    "$selfillum" 1
+
+	"$texoffset" "[0 0]"	
+
+    "Proxies"
+    {
+		"LinearRamp"
+		{
+		"resultVar" "$texoffset[0]"
+		"rate" .90
+		} 
+
+		"TextureTransform"
+		{
+		"translateVar" "$texoffset"
+		"resultVar" "$basetexturetransform"
+		} 
+    }
+}
+

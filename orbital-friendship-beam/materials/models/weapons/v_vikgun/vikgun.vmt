@@ -1,0 +1,14 @@
+"vertexlitgeneric" {
+    	"$basetexture" "Models\weapons\v_vikgun\vikgun"
+    	"$surfaceprop" "concrete"
+	"$bumpmap" "Models\weapons\v_vikgun\vikgun_n"
+	"$halflambert" 1
+	"$nodecal" "1"
+	"$model" "1"
+
+	"$phong" "1"
+	"$phongexponent" "8"
+//	"$phongexponenttexture" "models/Alyx/alyx_head_exponent"
+	"$phongboost"	"30"
+	"$phongfresnelranges"	"[0.05 0.5 1]"
+}
