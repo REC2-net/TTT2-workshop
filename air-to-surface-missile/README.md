@@ -2,7 +2,7 @@
 
 ![Icon](icon.jpg)
 
-The Air-to-Surface Missile is an updated and optimized weapon for **[Trouble in Terrorist Town 2 (TTT2)](https://github.com/TTT-2/TTT2)**. Originally created by Otger, this modernized version ensures full compatibility with TTT2's mechanics, optimized rendering pipelines, and modernized networking. 
+The Air-to-Surface Missile is an updated and optimized weapon for **[Trouble in Terrorist Town 2 (TTT2)](https://github.com/TTT-2/TTT2)**. Originally created by [Xegor](https://steamcommunity.com/id/xegor), this modernized version ensures full compatibility with TTT2's mechanics, optimized rendering pipelines, and modernized networking. 
 
 As a Traitor, you can call down an explosive air-to-surface missile from the sky. Use the mouse or movement keys to guide the missile down to your unsuspecting targets.
 
@@ -44,7 +44,7 @@ The following ConVars are available for server owners to configure the behavior 
 - **No Damage Being Dealt**: Check if `ttt_asm_friendlyfire` or `ttt_asm_damage_owner` is blocking the damage, or if another addon is interfering with `util.BlastDamage`.
 
 ## Credits
-- **Original Author**: Otger
+- **Original Author**: [Xegor](https://steamcommunity.com/id/xegor)
 - **Modernization & TTT2 Port**: Florentin / REC2-net
 
 ## License

@@ -1,5 +1,5 @@
 SWEP.PrintName = "Air-to-Surface Missile"
-SWEP.Author = "Otger"
+SWEP.Author = "REC2-net"
 SWEP.Purpose = "Air-to-Surface Controllable Missile."
 SWEP.Instructions =
 	"Left click to launch an air-to-surface missile attack from the sky above the aimed position.\nUse the mouse or the movement keys to direct it.\nLeft click to launch, right click to abort."
