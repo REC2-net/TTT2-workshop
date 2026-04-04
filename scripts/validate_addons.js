@@ -133,7 +133,6 @@ class Validator {
       "scripts",
       "packages",
       "node_modules",
-      "tools",
     ];
     if (!fs.existsSync(this.rootDir)) return true;
     const rootEntries = fs.readdirSync(this.rootDir, { withFileTypes: true });
