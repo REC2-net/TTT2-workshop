@@ -9,6 +9,7 @@ SWEP.BounceWeaponIcon = true
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = true
 SWEP.Base = "weapon_tttbase"
+SWEP.IsAsmSWEP = true
 SWEP.Kind = WEAPON_EQUIP1
 SWEP.CanBuy = { ROLE_TRAITOR }
 SWEP.LimitedStock = true
@@ -119,7 +120,7 @@ function SWEP:Initialize()
 							if type(self.DrawInactiveHUD) == "function" then
 								self:DrawInactiveHUD()
 							else
-								hook.Remove("ASMSwepDrawHUD")
+								hook.Remove("HUDPaint", "ASMSwepDrawHUD")
 							end
 						end
 					end
@@ -177,7 +178,7 @@ function SWEP:OnRemove()
 			self.Menu:Remove()
 		end
 		debugPrint("Remove hud hook")
-		hook.Remove("HUDPaint", "AsmSwepDrawHUD")
+		hook.Remove("HUDPaint", "ASMSwepDrawHUD")
 	end
 end
 
@@ -503,7 +504,16 @@ if SERVER then
 				return
 			end
 			if infClass == "sent_asm" then
-				local nI = ents.Create("swep_asm")
+				local nI = IsValid(attacker) and attacker:IsPlayer() and attacker:GetActiveWeapon()
+				if not IsValid(nI) or nI:GetClass() ~= "swep_asm" then
+					nI = ents.Create("swep_asm")
+					nI:Spawn()
+					timer.Simple(0, function()
+						if IsValid(nI) then
+							nI:Remove()
+						end
+					end)
+				end
 				debugPrint("Changed inflictor", inflictor, nI)
 				inflictor = nI
 				dmginfo:SetInflictor(nI)
@@ -584,8 +594,7 @@ if SERVER then
 	function SWEP:FindInitialPos(vStart)
 		local td = {}
 		td.start = vStart + Vector(0, 0, -32)
-		td.endpos = vStart
-		td.endpos.z = 16384
+		td.endpos = Vector(vStart.x, vStart.y, 16384)
 		td.mask = MASK_NPCWORLDSTATIC
 		td.filter = {}
 		local bContinue = true
@@ -881,7 +890,6 @@ if CLIENT then
 		end
 	end
 
-
 	function SWEP:GetViewModelPosition(pos, ang)
 		if self:GetModel() == "models/weapons/v_toolgun.mdl" then
 			local offset = Vector(-6, 5.6, 0)
@@ -889,12 +897,6 @@ if CLIENT then
 			pos = pos + offset
 		end
 		return pos, ang
-	end
-
-		render.DrawLine(debugC, y, Color(0, 255, 0))
-		render.DrawLine(debugC, z, Color(0, 0, 255))
-	end
-
 	end
 
 	function SWEP:ViewModelDrawn()
