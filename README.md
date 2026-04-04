@@ -31,8 +31,6 @@ This project is structured as a **monorepo**, meaning multiple distinct Garry's 
 │   └── rules/             # Markdown rules enforcing GLua quality, security, and structure
 ├── packages/              # Shared libraries and reusable GLua modules
 ├── scripts/               # Node.js CI/CD scripts for validation and building
-│   ├── validate_addons.js # Dry-runs rules against every addon
-│   └── validate_addons.test.js
 ├── my_ttt2_addon_1/       # An isolated Garry's Mod addon directory
 │   ├── addon.json         # Workshop metadata (title, type, tags)
 │   ├── icon.png           # 512x512 Workshop icon
