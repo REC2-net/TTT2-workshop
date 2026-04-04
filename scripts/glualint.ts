@@ -73,6 +73,12 @@ function platformAssetPredicate(version: string) {
   }
 
   if (platform === "darwin") {
+    if (arch === "arm64") {
+      // Check if native arm64 build exists, fallback to x86_64 via Rosetta
+      return (asset: ReleaseAsset) =>
+        asset.name === `glualint-${version}-OSX-arm64.tar.gz` ||
+        asset.name === `glualint-${version}-OSX-x86_64.tar.gz`;
+    }
     return (asset: ReleaseAsset) =>
       asset.name === `glualint-${version}-OSX-x86_64.tar.gz`;
   }
