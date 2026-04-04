@@ -1,7 +1,6 @@
 ---
 alwaysApply: false
-globs: "**/addon.json, **/*.png, **/*.jpg"
-description: "Rules for Garry's Mod Steam Workshop standards and addon metadata."
+globs: **/addon.json, **/*.png, **/*.jpg
 ---
 
 # GMod Workshop Standards

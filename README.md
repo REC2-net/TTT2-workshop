@@ -31,8 +31,6 @@ This project is structured as a **monorepo**, meaning multiple distinct Garry's 
 │   └── rules/             # Markdown rules enforcing GLua quality, security, and structure
 ├── packages/              # Shared libraries and reusable GLua modules
 ├── scripts/               # Node.js CI/CD scripts for validation and building
-│   ├── validate_addons.js # Dry-runs rules against every addon
-│   └── validate_addons.test.js
 ├── my_ttt2_addon_1/       # An isolated Garry's Mod addon directory
 │   ├── addon.json         # Workshop metadata (title, type, tags)
 │   ├── icon.png           # 512x512 Workshop icon
@@ -52,10 +50,12 @@ This project is structured as a **monorepo**, meaning multiple distinct Garry's 
 
 To develop, test, and validate addons locally, you will need the following tools installed:
 
-- **[Node.js](https://nodejs.org/)** (v16+): Required for running the validation and CI/CD scripts.
+- **[Bun](https://bun.sh/)**: Required for repository dev tooling (pre-commit hooks, Lua linting/formatting scripts).
+- **[Node.js](https://nodejs.org/)** (v16+): Required if you use the Node-based validation/CI scripts.
 - **[Garry's Mod](https://store.steampowered.com/app/4000/Garrys_Mod/)**: Required for local testing.
 - **[gmpublish.exe](https://wiki.facepunch.com/gmod/Workshop_Addon_Updating)**: (Included in Garry's Mod `bin` folder) Required to manually pack `.gma` files or upload to the Workshop.
 - **[glualint](https://github.com/FPtje/GLuaFixer)** & **[stylua](https://github.com/JohnnyMorganz/StyLua)**: Required for linting and formatting GLua code.
+- `tar` and `unzip`: Required for extracting the pinned `glualint` binary during `bun install`.
 - **Code Editor**: We recommend [Visual Studio Code](https://code.visualstudio.com/) with the **GLua Enhanced** and **GLuaLint** extensions.
 
 ---
@@ -72,11 +72,12 @@ Follow these steps to get your local environment running:
    ```
 
 2. **Initialize Dependencies**
-   (If any NPM packages are added later for CI, install them here)
 
    ```sh
-   # bun install
+   bun install
    ```
+
+   This also downloads a pinned `glualint` binary into `.tools/` and installs the pinned StyLua CLI.
 
 3. **Symlink to Garry's Mod (Optional but Recommended)**
    To test your addons live in Garry's Mod without copying files repeatedly, create a symlink from the addon directory to your Garry's Mod `addons` folder.
@@ -95,9 +96,82 @@ Follow these steps to get your local environment running:
 
 ---
 
+## 🧹 Lua Formatting & Linting (GLua / TTT2)
+
+This workspace standardizes **formatting** with StyLua and **linting** with glualint:
+
+- Formatting config: [.stylua.toml](.stylua.toml) + [.styluaignore](.styluaignore)
+- Lint config: [.glualint.json](.glualint.json) (glualint only loads `glualint.json` / `.glualint.json` by name)
+- Pre-commit hooks: `.husky/pre-commit` runs `lint-staged` to auto-format and lint staged `*.lua` files
+- Tool installation:
+  - StyLua CLI is installed via Bun dev dependencies during `bun install`.
+  - glualint is downloaded automatically on `bun install` and stored in `.tools/` (version pinned in `package.json`).
+
+### Common Commands
+
+```sh
+bun run lua:format
+bun run lua:lint
+bun run lua:check
+```
+
+### Configuration Notes (Project Defaults)
+
+**Formatting (StyLua)**
+
+- Target syntax: Lua 5.1 (`syntax = "Lua51"`) to match Garry's Mod.
+- Indentation: tabs (width 4 for alignment).
+- Line length: `column_width = 120`.
+
+**Linting (glualint)**
+
+- Enabled by default: deprecated API usage, trailing whitespace, whitespace style, shadowing, empty blocks, duplicate table keys, redundant parentheses/if-statements, unused locals.
+- Deliberate exceptions (TTT2/GMod realities):
+  - Unused function parameters are allowed (TTT2 hooks often provide arguments you don't use).
+  - `**/workshop/**` is ignored (generated build output).
+
+See `.glualint.json` for the complete rule set.
+
+### Changing Defaults
+
+- StyLua: edit `.stylua.toml` (indentation, line width, quoting) and re-run `bun run lua:format`.
+- glualint: edit `.glualint.json` (enable/disable checks or ignore paths) and re-run `bun run lua:lint`.
+- glualint version pin: update `package.json > config.glualintVersion` and run `bun install` again.
+
+### GMod / TTT2 Standards (Enforced via Review + Tooling)
+
+- **Realm separation**: put code in the correct realm (`server/`, `client/`, `shared/`) and avoid running TTT2-only code outside TTT2 contexts.
+- **No global pollution**: keep the global namespace clean; prefer locals and scoped tables/modules.
+- **Autorun loading**: prefer `lua/terrortown/autorun/{server,client,shared}/` for TTT2-only autorun files (TTT2 fileloader) instead of `lua/autorun/`.
+
+### Editor Setup (VS Code)
+
+- Install extensions:
+  - GLua Enhanced
+  - GLuaLint
+  - StyLua (formatter)
+- Enable format-on-save and set StyLua as formatter for Lua:
+
+```json
+{
+  "[lua]": {
+    "editor.defaultFormatter": "JohnnyMorganz.stylua",
+    "editor.formatOnSave": true
+  }
+}
+```
+
 ## 🛠 Available Scripts
 
 We provide Node.js scripts to ensure that no broken addons are pushed to the Workshop.
+
+### Lua Tooling
+
+```sh
+bun run lua:format # formats all Lua files using .stylua.toml
+bun run lua:lint   # lints all Lua files using .glualint.json
+bun run lua:check  # format-check + lint (CI-friendly)
+```
 
 ### Validate Addons
 
