@@ -11,6 +11,7 @@ globs: **/*.lua
 
 ## 2. Formatting & Linting
 
-- **glualint**: Code must pass `glualint` without warnings.
-- **stylua**: Code must be formatted using `stylua`.
+- **glualint**: Code must pass `glualint` (config: `.glualint.json`).
+- **stylua**: Code must be formatted using `stylua` (config: `.stylua.toml`, ignore: `.styluaignore`).
+- **Pre-commit**: Staged `*.lua` files are auto-formatted and linted via Husky + lint-staged.
 - **TTT2 Standards**: Follow TTT2 specific API conventions and avoid global namespace pollution. Use localized functions where possible.

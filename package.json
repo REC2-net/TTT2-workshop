@@ -1,0 +1,45 @@
+{
+  "name": "ttt2-workshop",
+  "private": true,
+  "packageManager": "bun@1.1.0",
+  "trustedDependencies": [
+    "@johnnymorganz/stylua-bin"
+  ],
+  "config": {
+    "glualintVersion": "1.29.0"
+  },
+  "devDependencies": {
+    "@johnnymorganz/stylua-bin": "^2.4.0",
+    "@types/node": "^22.15.3",
+    "bun-types": "^1.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-sh": "^0.18.0"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "postinstall": "bun scripts/glualint.ts install && bun node_modules/@johnnymorganz/stylua-bin/install.js",
+    "lua:format": "stylua --config-path .stylua.toml .",
+    "lua:format:check": "stylua --check --config-path .stylua.toml .",
+    "lua:lint": "bun scripts/glualint.ts lint --config .glualint.json .",
+    "lua:lint:version": "bun scripts/glualint.ts version",
+    "lua:check": "bun run lua:format:check && bun run lua:lint",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "**/*.lua": [
+      "stylua --config-path .stylua.toml",
+      "bun scripts/glualint.ts lint --config .glualint.json"
+    ],
+    "**/*.sh": [
+      "prettier --write --plugin=prettier-plugin-sh"
+    ],
+    "**/*.md": [
+      "prettier --write"
+    ],
+    "**/*.json": [
+      "prettier --write"
+    ]
+  }
+}
