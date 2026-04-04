@@ -137,6 +137,10 @@ function ENT:SetTrail()
 end
 
 function ENT:Draw()
+	if not IsValid(LocalPlayer()) then
+		self:DrawModel()
+		return
+	end
 	local wep = LocalPlayer():GetActiveWeapon()
 	if IsValid(wep) and wep.IsAsmSWEP then
 		if wep.Status == 2 or wep.Status == 3 then
@@ -153,8 +157,8 @@ function ENT:OnRemove()
 			self.Sound = nil
 		end
 
-		if IsValid(self.SWEP) then 
-			self.SWEP:MissileEndPhase() 
+		if IsValid(self.SWEP) then
+			self.SWEP:MissileEndPhase()
 		end
 
 		if IsValid(self.Trail) then
