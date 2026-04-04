@@ -26,7 +26,7 @@ This project is structured as a **monorepo**, meaning multiple distinct Garry's 
 ### Directory Structure
 
 ```text
-/Users/florentin/Repositories/REC2-net/TTT2-workshop
+/
 ├── .trae/                 # IDE-specific configurations and project rules
 │   └── rules/             # Markdown rules enforcing GLua quality, security, and structure
 ├── packages/              # Shared libraries and reusable GLua modules
@@ -66,7 +66,7 @@ Follow these steps to get your local environment running:
 
 1. **Clone the Repository**
 
-   ```bash
+   ```sh
    git clone git@github.com:REC2-net/TTT2-workshop.git
    cd TTT2-workshop
    ```
@@ -74,7 +74,7 @@ Follow these steps to get your local environment running:
 2. **Initialize Dependencies**
    (If any NPM packages are added later for CI, install them here)
 
-   ```bash
+   ```sh
    # bun install
    ```
 
@@ -89,8 +89,8 @@ Follow these steps to get your local environment running:
 
    _macOS/Linux:_
 
-   ```bash
-   ln -s /Users/florentin/Repositories/REC2-net/TTT2-workshop/my_ttt2_addon ~/Library/Application\ Support/Steam/steamapps/common/GarrysMod/garrysmod/addons/my_ttt2_addon
+   ```sh
+   ln -s /my_ttt2_addon ~/Library/Application\ Support/Steam/steamapps/common/GarrysMod/garrysmod/addons/my_ttt2_addon
    ```
 
 ---
@@ -103,7 +103,7 @@ We provide Node.js scripts to ensure that no broken addons are pushed to the Wor
 
 Runs the compliance suite against all addons in the monorepo. It checks for file sizes (<200MB), icon dimensions (512x512), valid UTF-8 encoding, legacy `.dll` files, and hardcoded API keys.
 
-```bash
+```sh
 node scripts/validate_addons.js
 ```
 
@@ -111,7 +111,7 @@ node scripts/validate_addons.js
 
 Executes the test suite for the validation script itself using a mock repository.
 
-```bash
+```sh
 node scripts/validate_addons.test.js
 ```
 
@@ -173,4 +173,4 @@ We welcome contributions! To ensure high-quality standards, please adhere to the
 
 ---
 
-_Maintained by the REC2.net Team._
+_Maintained by the REC2.net Community._
