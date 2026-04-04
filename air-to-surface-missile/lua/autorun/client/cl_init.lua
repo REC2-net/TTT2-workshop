@@ -1,1 +1,3 @@
-hook.Add("TTT2FinishedLoading", "TTT2RegisterMenof36goAddonDev", function() AddTTT2AddonDev("76561198056317817") end) -- Use string or string.format("%.f",<steamid64>)
+hook.Add("TTT2FinishedLoading", "TTT2RegisterMenof36goAddonDev", function()
+	AddTTT2AddonDev("76561198056317817")
+end) -- Use string or string.format("%.f",<steamid64>)
