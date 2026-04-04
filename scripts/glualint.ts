@@ -169,7 +169,8 @@ async function installGlualint(repoRoot: string): Promise<string> {
   if (isZip) {
     try {
       spawnChecked("unzip", ["-o", archivePath, "-d", targetDir], repoRoot);
-    } catch {
+    } catch (unzipError) {
+      console.warn("unzip failed, falling back to tar:", unzipError);
       spawnChecked("tar", ["-xf", archivePath, "-C", targetDir], repoRoot);
     }
   } else {
