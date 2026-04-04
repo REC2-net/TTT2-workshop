@@ -1,0 +1,63 @@
+name: Publish TTT2 Addons
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        addon: [my_ttt2_addon_1, my_ttt2_addon_2] # Add your addons here
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Validate Addons
+        run: bun run scripts/validate_addons.ts
+
+      - name: Pull Uploader Image
+        run: docker pull ghcr.io/linventif/gmod-workshop-cicd:latest
+
+      - name: Publish to Steam Workshop
+        env:
+          STEAM_USER: ${{ secrets.STEAM_USER }}
+          STEAM_PASS: ${{ secrets.STEAM_PASS }}
+          STEAM_SHARED_SECRET: ${{ secrets.STEAM_SHARED_SECRET }}
+          # You should store the Workshop ID in a secret or parse it dynamically
+          PUBLISHED_FILE_ID: ${{ secrets[format('{0}_ID', matrix.addon)] || 0 }}
+          CONTENT_PATH: /data/${{ matrix.addon }}
+          PREVIEW_FILE: /data/${{ matrix.addon }}/icon.png
+          TITLE: "TTT2 Addon - ${{ matrix.addon }}"
+          DESCRIPTION: "Automated release from CI/CD pipeline"
+          VISIBILITY: "0" # 0: private, 1: public
+          CHANGE_NOTE: "Automated build via GitHub Actions"
+        run: |
+          docker run --rm \
+            -e STEAM_USER \
+            -e STEAM_PASS \
+            -e STEAM_SHARED_SECRET \
+            -e PUBLISHED_FILE_ID \
+            -e CONTENT_PATH \
+            -e PREVIEW_FILE \
+            -e TITLE \
+            -e DESCRIPTION \
+            -e VISIBILITY \
+            -e CHANGE_NOTE \
+            -v ${{ github.workspace }}/${{ matrix.addon }}:/data/${{ matrix.addon }}:ro \
+            ghcr.io/linventif/gmod-workshop-cicd:latest

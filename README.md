@@ -14,8 +14,9 @@ This repository enforces strict CI/CD pipelines, modular design, and robust qual
 4. [Available Scripts](#-available-scripts)
 5. [Steam Workshop Integration](#-steam-workshop-integration)
 6. [Contribution Guidelines](#-contribution-guidelines)
-7. [Troubleshooting](#-troubleshooting)
-8. [Helpful Links](#-helpful-links)
+7. [Detailed Workflows](#-detailed-workflows)
+8. [Troubleshooting](#-troubleshooting)
+9. [Helpful Links](#-helpful-links)
 
 ---
 
@@ -149,6 +150,15 @@ We welcome contributions! To ensure high-quality standards, please adhere to the
 4. **Security**:
    - Do not redistribute copyrighted Valve assets or decompiled BSP content.
    - **Never** hardcode Steam API keys. The validation script will flag and block 32-character hexadecimal strings resembling API keys.
+
+---
+
+## 📖 Detailed Workflows
+
+For an in-depth understanding of the solo development lifecycle, please refer to the dedicated workflow documents:
+
+- **[TTT2 Workflow](TTT2.md)**: Explores TTT2-specific architecture, hooks, and automated testing protocols.
+- **[Garry's Mod Workflow](Garrys_Mod.md)**: Covers end-to-end repository initialization, branching strategies, CI/CD automation, and Steam Workshop metadata preparation.
 
 ---
 
