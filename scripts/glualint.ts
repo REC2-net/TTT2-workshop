@@ -4,8 +4,9 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
+  statSync,
 } from "node:fs";
-import { join, resolve } from "node:path";
+import { isAbsolute, join, relative, resolve } from "node:path";
 
 type ReleaseAsset = {
   name: string;
@@ -259,6 +260,106 @@ async function runGlualint(repoRoot: string, args: string[]): Promise<number> {
   return await child.exited;
 }
 
+type GlualintCliParseResult = {
+  glualintArgs: string[];
+  rawTargets: string[];
+};
+
+function parseGlualintCliArgs(
+  repoRoot: string,
+  args: string[],
+): GlualintCliParseResult {
+  const glualintArgs: string[] = [];
+  const rawTargets: string[] = [];
+
+  const flagsWithValue = new Set(["--config", "-c"]);
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+
+    if (arg === "--") {
+      rawTargets.push(...args.slice(i + 1));
+      break;
+    }
+
+    if (flagsWithValue.has(arg)) {
+      const value = args[i + 1];
+      if (!value) {
+        throw new Error(`Missing value for ${arg}`);
+      }
+      glualintArgs.push(arg, value);
+      i++;
+      continue;
+    }
+
+    if (arg.startsWith("-")) {
+      glualintArgs.push(arg);
+      continue;
+    }
+
+    if (arg.endsWith(".lua")) {
+      rawTargets.push(arg);
+      continue;
+    }
+
+    try {
+      const resolved = isAbsolute(arg) ? arg : resolve(repoRoot, arg);
+      if (existsSync(resolved) && statSync(resolved).isDirectory()) {
+        rawTargets.push(arg);
+      } else {
+        glualintArgs.push(arg);
+      }
+    } catch {
+      glualintArgs.push(arg);
+    }
+  }
+
+  return { glualintArgs, rawTargets };
+}
+
+function normalizeTargetPath(repoRoot: string, inputPath: string): string {
+  const absPath = isAbsolute(inputPath)
+    ? inputPath
+    : resolve(repoRoot, inputPath);
+  const rel = relative(repoRoot, absPath);
+  if (rel === "") {
+    return ".";
+  }
+  if (!rel.startsWith("..") && !isAbsolute(rel)) {
+    return rel;
+  }
+  return absPath;
+}
+
+function validateTargetPaths(repoRoot: string, rawTargets: string[]): string[] {
+  const normalized: string[] = [];
+
+  for (const raw of rawTargets) {
+    const abs = isAbsolute(raw) ? raw : resolve(repoRoot, raw);
+    if (!existsSync(abs)) {
+      throw new Error(`Path does not exist: ${raw}`);
+    }
+
+    const stat = statSync(abs);
+    if (stat.isDirectory()) {
+      normalized.push(normalizeTargetPath(repoRoot, raw));
+      continue;
+    }
+
+    if (stat.isFile()) {
+      if (!raw.endsWith(".lua") && !abs.endsWith(".lua")) {
+        throw new Error(`Not a .lua file: ${raw}`);
+      }
+      normalized.push(normalizeTargetPath(repoRoot, raw));
+      continue;
+    }
+
+    throw new Error(`Unsupported path type: ${raw}`);
+  }
+
+  return normalized;
+}
+
 async function main() {
   const repoRoot = resolve(import.meta.dir, "..");
   const [command, ...rest] = process.argv.slice(2);
@@ -271,7 +372,7 @@ async function main() {
   ) {
     console.log(`Usage:
   bun scripts/glualint.ts install
-  bun scripts/glualint.ts lint [glualint args...]
+  bun scripts/glualint.ts lint [glualint args...] [paths...]
   bun scripts/glualint.ts version`);
     process.exit(0);
   }
@@ -288,7 +389,10 @@ async function main() {
   }
 
   if (command === "lint") {
-    const exitCode = await runGlualint(repoRoot, rest);
+    const { glualintArgs, rawTargets } = parseGlualintCliArgs(repoRoot, rest);
+    const targets = validateTargetPaths(repoRoot, rawTargets);
+    const args = targets.length > 0 ? [...glualintArgs, ...targets] : rest;
+    const exitCode = await runGlualint(repoRoot, args);
     process.exit(exitCode);
   }
 
