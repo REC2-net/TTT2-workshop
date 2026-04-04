@@ -1,7 +1,6 @@
 ---
 alwaysApply: false
-globs: "**/*.lua"
-description: "GLua code quality, formatting, and linting rules."
+globs: **/*.lua
 ---
 
 # GLua Quality Gates

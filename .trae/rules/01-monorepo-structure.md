@@ -1,6 +1,5 @@
 ---
 alwaysApply: true
-description: "Monorepo structure, Conventional Commits, and CI/CD rules for TTT2 addons."
 ---
 
 # Monorepo & CI/CD Rules
