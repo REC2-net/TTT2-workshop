@@ -87,23 +87,59 @@ function platformAssetPredicate(version: string) {
 }
 
 async function fetchRelease(version: string): Promise<GithubRelease> {
-  const response = await fetch(
-    `https://api.github.com/repos/FPtje/GLuaFixer/releases/tags/${version}`,
-    {
-      headers: {
-        Accept: "application/vnd.github+json",
-        "User-Agent": "ttt2-workshop-tooling",
+  const timeoutMs = 30_000;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
+
+  try {
+    const response = await fetch(
+      `https://api.github.com/repos/FPtje/GLuaFixer/releases/tags/${version}`,
+      {
+        headers: {
+          Accept: "application/vnd.github+json",
+          "User-Agent": "ttt2-workshop-tooling",
+        },
+        signal: controller.signal,
       },
-    },
-  );
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch glualint release metadata for ${version}: ${response.status} ${response.statusText}`,
     );
-  }
 
-  return (await response.json()) as GithubRelease;
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch glualint release metadata for ${version}: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    return (await response.json()) as GithubRelease;
+  } catch (error) {
+    const isAbortError =
+      (error instanceof DOMException && error.name === "AbortError") ||
+      (error instanceof Error && error.name === "AbortError");
+
+    if (isAbortError) {
+      throw new Error(
+        `Failed to fetch glualint release metadata for ${version}: request timed out after ${timeoutMs}ms`,
+      );
+    }
+
+    if (
+      error instanceof Error &&
+      error.message.startsWith(
+        `Failed to fetch glualint release metadata for ${version}:`,
+      )
+    ) {
+      throw error;
+    }
+
+    throw new Error(
+      `Failed to fetch glualint release metadata for ${version}: request failed (${
+        error instanceof Error ? error.message : String(error)
+      })`,
+    );
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 async function downloadFile(url: string, outputPath: string): Promise<void> {
