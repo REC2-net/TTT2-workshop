@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-globs: "**/*.lua"
+globs: **/*.lua
 description: "GLua code quality, formatting, and linting rules."
 ---
 
@@ -12,6 +12,6 @@ description: "GLua code quality, formatting, and linting rules."
 
 ## 2. Formatting & Linting
 
-- **glualint**: Code must pass `glualint` without warnings.
+- **glualint**: Code must pass `tools/glualint` without warnings.
 - **stylua**: Code must be formatted using `stylua`.
 - **TTT2 Standards**: Follow TTT2 specific API conventions and avoid global namespace pollution. Use localized functions where possible.
