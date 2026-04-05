@@ -578,7 +578,7 @@ if SERVER then
 	function SWEP:FindInitialPos(vStart)
 		local td = {}
 		td.start = vStart + Vector(0, 0, -32)
-		td.endpos = vStart
+		td.endpos = Vector(vStart.x, vStart.y, vStart.z)
 		td.endpos.z = 16384
 		td.mask = MASK_NPCWORLDSTATIC
 		td.filter = {}
