@@ -31,6 +31,24 @@ local SndLoop = Sound("weapons/rpg/rocket1.wav")
 local SndFire = Sound("weapons/stinger_fire1.wav")
 local SndBoost = Sound("weapons/rpg/rocketfire1.wav")
 
+local function getCvarBool(name, fallback)
+	local cvar = GetConVar(name)
+	if not cvar then
+		return fallback
+	end
+
+	return cvar:GetBool()
+end
+
+local function getCvarInt(name, fallback)
+	local cvar = GetConVar(name)
+	if not cvar then
+		return fallback
+	end
+
+	return cvar:GetInt()
+end
+
 function ENT:Initialize()
 	if SERVER then
 		self:SetModel("models/props_phx/mk-82.mdl")
@@ -108,9 +126,9 @@ function ENT:Explode()
 			self:GetOwner():SetViewEntity(self:GetOwner())
 		end
 
-		local baseDamage = GetConVar("ttt_asm_missile_blast_damage"):GetInt()
-		local radius = GetConVar("ttt_asm_missile_blast_radius"):GetInt()
-		local debug = GetConVar("ttt_asm_show_debug"):GetBool()
+		local baseDamage = getCvarInt("ttt_asm_missile_blast_damage", 110)
+		local radius = getCvarInt("ttt_asm_missile_blast_radius", 384)
+		local debug = getCvarBool("ttt_asm_show_debug", false)
 		local attacker = self:GetOwner()
 		if not IsValid(attacker) and IsValid(self.SWEP) then
 			attacker = self.SWEP:GetOwner()

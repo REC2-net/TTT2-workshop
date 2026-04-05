@@ -147,7 +147,11 @@ function Convar(convarGroup, ttt2, name, default, tags, desc, type, min, max, de
 	obj.min = min
 	obj.max = max
 	obj.decimal = decimal
-	CreateConVar(name, default, tags, desc)
+	if type == "int" or type == "float" then
+		CreateConVar(name, default, tags, desc, min, max)
+	else
+		CreateConVar(name, default, tags, desc)
+	end
 	table.insert(convarGroup.ListOfConvars, obj)
 	tbl = tbl .. "[tr][td]" .. obj.name .. " (Def. " .. obj.default .. ")[/td][td]" .. obj.desc .. "[/td][/tr]"
 	return obj

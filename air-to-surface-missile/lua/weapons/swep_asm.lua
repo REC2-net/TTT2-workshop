@@ -51,15 +51,16 @@ if SERVER then
 	resource.AddFile("materials/vgui/ttt/icon_asm_64.jpg")
 	resource.AddFile("materials/hud/killicons/asm_missile.vmt")
 	resource.AddFile("materials/hud/killicons/asm_missile.vtf")
-	if util.IsValidModel("models/weapons/v_c4.mdl") then
-		SWEP.ModelC4 = true
-		SWEP.ViewModel = "models/weapons/v_c4.mdl"
-		SWEP.WorldModel = "models/weapons/w_c4.mdl"
-	else
-		SWEP.ModelC4 = false
-		SWEP.ViewModel = "models/weapons/v_toolgun.mdl"
-		SWEP.WorldModel = "models/weapons/w_toolgun.mdl"
-	end
+end
+
+if util.IsValidModel("models/weapons/v_c4.mdl") then
+	SWEP.ModelC4 = true
+	SWEP.ViewModel = "models/weapons/v_c4.mdl"
+	SWEP.WorldModel = "models/weapons/w_c4.mdl"
+else
+	SWEP.ModelC4 = false
+	SWEP.ViewModel = "models/weapons/v_toolgun.mdl"
+	SWEP.WorldModel = "models/weapons/w_toolgun.mdl"
 end
 
 local SndReady = Sound("npc/metropolice/vo/isreadytogo.wav")
@@ -172,7 +173,7 @@ function SWEP:Initialize()
 	if CLIENT then
 		self.FadeCount = 0
 		self.Load = 0
-		killicon.Add("sent_asm", "HUD/killicons/asm_missile", Color(255, 0, 0, 255))
+		killicon.Add("sent_asm", "hud/killicons/asm_missile", Color(255, 0, 0, 255))
 		language.Add("sent_asm", "Air-to-surface Missile")
 	end
 end
@@ -604,7 +605,7 @@ if SERVER then
 	end
 
 	function SWEP:CheckFriendly(ent)
-		if GetConVar("ttt_asm_show_colleagues"):GetBool() then
+		if getCvarBool("ttt_asm_show_colleagues", true) then
 			if IsValid(self:GetOwner()) then
 				local teamOwn = nil
 				if TTT2 then
@@ -724,7 +725,7 @@ if CLIENT then
 	end
 
 	function SWEP:CheckFriendly(ent)
-		if GetConVar("ttt_asm_show_colleagues"):GetBool() then
+		if getCvarBool("ttt_asm_show_colleagues", true) then
 			if IsValid(self:GetOwner()) then
 				local teamOwn = nil
 				if TTT2 then

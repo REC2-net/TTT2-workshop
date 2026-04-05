@@ -127,8 +127,13 @@ function ExplosionUtil:new()
 			hook.Add("PostDrawTranslucentRenderables", "Explosion" .. id .. "HitSphere", function()
 				render.SetColorMaterial()
 
-				local y = math.sqrt(radius * radius - (radius * radius * 100) / baseDamage)
-				local z = math.sqrt(radius * radius - (radius * radius * 50) / baseDamage)
+				local safeBaseDamage = math.max(1, baseDamage)
+				local radiusSqr = radius * radius
+				local yArg = radiusSqr - (radiusSqr * 100) / safeBaseDamage
+				local zArg = radiusSqr - (radiusSqr * 50) / safeBaseDamage
+
+				local y = math.Clamp(math.sqrt(math.max(0, yArg)), 0, radius)
+				local z = math.Clamp(math.sqrt(math.max(0, zArg)), 0, radius)
 
 				render.DrawWireframeSphere(hit, y, 10, 10, Color(255, 0, 0, 255))
 				render.DrawWireframeSphere(hit, z, 10, 10, Color(255, 255, 0, 255))
