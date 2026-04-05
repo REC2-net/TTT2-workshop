@@ -1,0 +1,6 @@
+- Modernized for current TTT2 servers and Linux hosting
+- Fixed explosion debug networking and removed invalid net writes
+- Added configurable line-of-sight explosion checks for performance tuning
+- Applied friendlyfire/owner-damage rules directly during explosion damage (no global damage hook)
+- Fixed global variable leaks and improved entity cleanup stability
+- Corrected material resource paths for case-sensitive filesystems
