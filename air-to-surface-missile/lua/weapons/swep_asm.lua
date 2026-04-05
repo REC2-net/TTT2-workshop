@@ -503,7 +503,6 @@ if SERVER then
 
 	function SWEP:SpawnMissile(vPos)
 		local mis = ents.Create("sent_asm")
-		mis:SetPos(vPos + Vector(0, 0, mis:OBBMins().z - 48))
 		mis:SetAngles(Angle(90, 0, 0))
 
 		local owner = self:GetOwner()
@@ -522,6 +521,7 @@ if SERVER then
 
 		mis:Spawn()
 		mis:Activate()
+		mis:SetPos(vPos + Vector(0, 0, mis:OBBMins().z - 48))
 		mis:Launch()
 
 		if IsValid(mis) then
@@ -910,7 +910,7 @@ if CLIENT then
 			local wave = em:Add("particle/particle_noisesphere", self.Pos)
 			wave:SetVelocity(Vector(math.sin(math.rad(n * 2)), math.cos(math.rad(n * 2)), 0) * self.Radius * 3)
 			wave:SetAirResistance(128)
-			wave:SetLifeTime(math.random(0.2, 0.4))
+			wave:SetLifeTime(math.Rand(0.2, 0.4))
 			wave:SetDieTime(math.random(3, 4))
 			wave:SetStartSize(64)
 			wave:SetEndSize(48)
@@ -921,7 +921,7 @@ if CLIENT then
 				Vector(math.random(-8, 8), math.random(-8, 8), math.random(8, 16)):GetNormal() * math.random(128, 1024)
 			)
 			fire:SetAirResistance(256)
-			fire:SetLifeTime(math.random(0.2, 0.4))
+			fire:SetLifeTime(math.Rand(0.2, 0.4))
 			fire:SetDieTime(math.random(2, 3))
 			fire:SetStartSize(80)
 			fire:SetEndSize(32)
