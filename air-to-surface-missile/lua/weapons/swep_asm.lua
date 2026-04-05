@@ -505,23 +505,26 @@ if SERVER then
 		local mis = ents.Create("sent_asm")
 		mis:SetPos(vPos + Vector(0, 0, mis:OBBMins().z - 48))
 		mis:SetAngles(Angle(90, 0, 0))
+
+		local owner = self:GetOwner()
+		if IsValid(owner) then
+			mis:SetOwner(owner)
+			mis.Owner = owner
+			mis.SWEP = self
+
+			if TTT2 then
+				mis.AssociatedTeam = owner:GetTeam()
+			else
+				mis.AssociatedTeam = owner:GetRole()
+			end
+			mis.UserID = owner:UserID()
+		end
+
 		mis:Spawn()
 		mis:Activate()
 		mis:Launch()
-		if IsValid(self:GetOwner()) then
-			mis:SetOwner(self:GetOwner())
-			if TTT2 then
-				mis.AssociatedTeam = self:GetOwner():GetTeam()
-			else
-				mis.AssociatedTeam = self:GetOwner():GetRole()
-			end
-			mis.UserID = self:GetOwner():UserID()
-		end
 
 		if IsValid(mis) then
-			mis.Owner = self:GetOwner()
-			mis.SWEP = self
-
 			self.Missile = mis
 			self:SetNWEntity("Missile", mis)
 			return true

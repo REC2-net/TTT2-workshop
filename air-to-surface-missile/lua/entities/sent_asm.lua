@@ -94,7 +94,7 @@ function ENT:Think()
 	end
 
 	local vel = Vector(0, 0, -24)
-	if IsValid(self.SWEP) and self.SWEP.Status == 3 then
+	if IsValid(self.SWEP) and self.SWEP.Status == 4 then
 		vel = Vector(0, 0, -4)
 	end
 	phys:AddVelocity(vel)

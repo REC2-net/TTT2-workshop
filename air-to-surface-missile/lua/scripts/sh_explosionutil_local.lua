@@ -185,6 +185,8 @@ function ExplosionUtil:Explode(
 	radius = radius or 200
 	debug = debug or false
 
+	radius = math.max(1, radius)
+
 	local effd = EffectData()
 	effd:SetStart(pos)
 	effd:SetOrigin(pos)
